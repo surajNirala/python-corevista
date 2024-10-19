@@ -1,0 +1,28 @@
+{% extends "layouts/base.html" %}
+{% block title %}Register User{% endblock %}
+{% block content %}
+<div class="col-md-12 mb-1 mt-1">
+    <h3>Register User</h3>
+</div>
+<div class="row">
+    {% if error %}
+    <div class="alert alert-danger">{{error}}</div>
+    {% endif %}
+    <div class="card mt-2">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            {% comment %} <div class="mb-3">
+                <label for="text" class="form-label">Post Text</label>
+                <textarea class="form-control" name="text" id="text" rows="5"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="photo" class="form-label">Photo</label>
+                <input type="file" class="form-control" name="photo" id="photo">
+            </div> {% endcomment %}
+            <button type="submit" class="btn btn-success mb-2">Register</button>
+        </form>
+        <p>Already have an account <a href="{% url 'login' %}">Login Here</a></p>
+    </div>
+</div>
+{% endblock content %}

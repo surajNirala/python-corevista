@@ -1,0 +1,10 @@
+{% extends "layouts/base.html" %}
+{% block title %}Post Page{% endblock %}
+{% block content %}
+    <h1 class="text-center mt-4">Are you sure that you want to delete the post?</h1>
+    <form method="post" class="text-center mt-3">
+        {% csrf_token %}
+        <button class="btn btn-danger">Delete</button>
+        <a href="{% url 'post_list' %}" class="btn btn-warning">Cancel</a>
+    </form>
+{% endblock content %}
