@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 
 def index(request):
+    return redirect('post_list')
     data = {}
     data['title'] = 'Post'
     return render(request, 'post/index.html',data)
