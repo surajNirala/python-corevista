@@ -3,8 +3,10 @@ from django.contrib.auth.models import User
 
 class Post(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
-    text = models.TextField(max_length=240)
+    title = models.TextField(max_length=240,default="")
+    text = models.TextField(max_length=1000)
     photo = models.ImageField(upload_to='photos/', blank=True, null=True)
+    status = models.IntegerField(max_length=2,default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

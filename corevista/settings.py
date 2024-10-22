@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-lp9dehqqf5-lyg=7)&3bikbv9*ijx=(=b683_eiy%f@&9o4u%b
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['python.corevista.in', 'www.python.corevista.in' ,'34.131.166.50', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -137,6 +137,8 @@ LOGIN_URL = '/accounts/login/'
 
 LOGIN_REDIRECT_URL = '/post-list/'
 LOGOUT_REDIRECT_URL = '/post-list/'
+
+LOGO_URL = '/media/images/corevista_logo.png'
 
 
 

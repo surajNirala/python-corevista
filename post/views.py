@@ -4,6 +4,7 @@ from .forms import PostForm,UserRegistrationForm
 from django.shortcuts import get_object_or_404,redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
+from django.db.models import Q
 
 def index(request):
     return redirect('post_list')
@@ -14,8 +15,16 @@ def index(request):
 def post_list(request):
     data = {}
     data['title'] = 'Post List'
-    posts = Post.objects.all().order_by('-created_at')
+    query = request.GET.get('search')
+    if query:
+        posts = Post.objects.filter(
+            Q(title__icontains=query) | Q(text__icontains=query) | Q(user__username__icontains=query)
+            )
+    else:
+        posts = Post.objects.all().order_by('-created_at')
+    # search
     data['posts'] = posts
+    data['query'] = query
     return render(request, 'post/post-list.html',data)
 
 @login_required
@@ -47,6 +56,7 @@ def post_edit(request,post_id):
             return redirect('post_list')
     else:
         form = PostForm(instance=post)
+    data['form'] = form
     return render(request, 'post/post-form.html',data)
 
 @login_required
@@ -73,7 +83,13 @@ def register(request):
             login(request,user)      
             return redirect('post_list')
         else:
-            data['error'] = "Invalid form data"
+            return render(request, 'registration/register.html', {'form': form})
     return render(request, 'registration/register.html',data)
+
+def post_detail(request,post_id):
+    data = {}
+    data['title'] = 'Post detail'
+    data['post'] = get_object_or_404(Post, pk=post_id)
+    return render(request, 'post/post-detail.html', data)
 
     

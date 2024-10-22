@@ -1,28 +1,42 @@
 {% extends "layouts/base.html" %}
 {% block title %}Register User{% endblock %}
 {% block content %}
-<div class="col-md-12 mb-1 mt-1">
-    <h3>Register User</h3>
-</div>
-<div class="row">
-    {% if error %}
-    <div class="alert alert-danger">{{error}}</div>
-    {% endif %}
-    <div class="card mt-2">
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            {% comment %} <div class="mb-3">
-                <label for="text" class="form-label">Post Text</label>
-                <textarea class="form-control" name="text" id="text" rows="5"></textarea>
+<div class="row justify-content-center">
+    <div class="col-md-5 mt-4 shadow">
+            <h3 class="text-center">Register User</h3>
+            {% include "common/message.html" %}
+            <div class="mt-2">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% comment %} {{form.as_p}} {% endcomment %}
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" name="username" id="username">
+                        <span class="helptext" id="id_username_helptext">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">email</label>
+                        <input type="email" class="form-control" name="email" maxlength="320" required="" id="id_email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" name="password1" id="password1">
+                        <ul>
+                            <li>Your password can’t be too similar to your other personal information.</li>
+                            <li>Your password must contain at least 8 characters.</li>
+                            <li>Your password can’t be a commonly used password.</li>
+                            <li>Your password can’t be entirely numeric.</li>
+                        </ul>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" name="password2" id="password2">
+                    </div>
+                    <button type="submit" class="btn btn-success mb-2">Register</button>
+                </form>
+                <p>Already have an account <a href="{% url 'login' %}">Login Here</a></p>
             </div>
-            <div class="mb-3">
-                <label for="photo" class="form-label">Photo</label>
-                <input type="file" class="form-control" name="photo" id="photo">
-            </div> {% endcomment %}
-            <button type="submit" class="btn btn-success mb-2">Register</button>
-        </form>
-        <p>Already have an account <a href="{% url 'login' %}">Login Here</a></p>
+        </div>
     </div>
 </div>
 {% endblock content %}
