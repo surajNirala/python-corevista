@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Post
-from .forms import PostForm,UserRegistrationForm
+from .forms import PostForm,UserRegistrationForm,CommentForm
 from django.shortcuts import get_object_or_404,redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
@@ -89,7 +89,20 @@ def register(request):
 def post_detail(request,post_id):
     data = {}
     data['title'] = 'Post detail'
-    data['post'] = get_object_or_404(Post, pk=post_id)
+    post = get_object_or_404(Post, pk=post_id)
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post  # Link the comment to the post
+            comment.user = request.user  # Set the user who made the comment
+            comment.save()
+            return redirect('post_detail', post_id=post.id)  # Redirect to the same post after commenting
+    else:
+        form = CommentForm()
+    data['post'] = post
+    data['comments'] = post.comments.all().order_by('-created_at')
+    data['form'] = form
     return render(request, 'post/post-detail.html', data)
 
     
