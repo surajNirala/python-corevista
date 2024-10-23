@@ -17,7 +17,7 @@ class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     comment = models.TextField(max_length=500)
-    status = models.IntegerField(max_length=2,default=1)
+    status = models.IntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
