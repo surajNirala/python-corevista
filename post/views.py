@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404,redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.db.models import Q
+from django.http import JsonResponse
 
 def index(request):
     return redirect('post_list')
@@ -15,13 +16,24 @@ def index(request):
 def post_list(request):
     data = {}
     data['title'] = 'Post List'
-    query = request.GET.get('search')
+    query = request.GET.get('search','')
+    posts = Post.objects.all().order_by('-created_at')
     if query:
         posts = Post.objects.filter(
             Q(title__icontains=query) | Q(text__icontains=query) | Q(user__username__icontains=query)
             )
-    else:
-        posts = Post.objects.all().order_by('-created_at')
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        # Return JSON if it's an AJAX request
+        post_data = []
+        for post in posts:
+            post_data.append({
+                'id': post.id,
+                'title': post.title,
+                'text': post.text,
+                'user': post.user.username,
+                'photo': post.photo.url if post.photo else ''
+            })
+        return JsonResponse({'posts': post_data})
     # search
     data['posts'] = posts
     data['query'] = query
