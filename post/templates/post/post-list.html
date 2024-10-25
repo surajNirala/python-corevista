@@ -15,13 +15,13 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <h5 class="card-title">
-                                <a href="{% url "post_detail" post.id %}" class="text-decoration-none">{{post.title|default:"No title"}}</a>
+                                <a href="{% url "post_detail" post.id %}" class="text-decoration-none">{{post.title|default:"No title"|slice:":20"}}</a>
                             </h5>
                             <h5 class="card-title">
                                 <a href="#" class="text-decoration-none">{{ post.user.username }}</a>
                             </h5>
                         </div>
-                        <p class="card-text">{{ post.text }}</p>
+                        <p class="card-text">{{ post.text|slice:":50" }}</p>
                         {% if post.user == user %}
                         <a title="Edit" href="{% url 'post_edit' post.id %}" class="text-success"><i class="fa fa-pencil"></i></a>
                         <a title="Delete" href="{% url 'post_delete' post.id %}" class="text-danger"><i class="fa fa-trash"></i></a>
@@ -30,6 +30,31 @@
                 </div>
             </div>
         {% endfor %}
+        <!-- Pagination Controls -->
+        <nav aria-label="Page navigation example">
+            <p>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if query %}&search={{ query }}{% endif %}">Previous</a>
+                    </li>
+                {% endif %}
+                {% for page_num in page_obj.paginator.page_range %}
+                    {% if page_num == page_obj.number %}
+                        <li class="page-item active">
+                            <a class="page-link" href="?page={{ page_num }}{% if query %}&search={{ query }}{% endif %}">{{ page_num }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_num }}{% if query %}&search={{ query }}{% endif %}">{{ page_num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+              {% if page_obj.has_next %}
+              <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if query %}&search={{ query }}{% endif %}">Next</a></li>
+              {% endif %}
+            </ul>
+        </nav>
     </div>
 </div>
 {% endblock content %}

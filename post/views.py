@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.db.models import Q
 from django.http import JsonResponse
+from django.contrib import messages
+from django.core.paginator import Paginator
 
 def index(request):
     return redirect('post_list')
@@ -22,6 +24,11 @@ def post_list(request):
         posts = Post.objects.filter(
             Q(title__icontains=query) | Q(text__icontains=query) | Q(user__username__icontains=query)
             )
+     # Pagination settings
+    paginator = Paginator(posts, 2)  # Show 10 posts per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         # Return JSON if it's an AJAX request
         post_data = []
@@ -33,10 +40,17 @@ def post_list(request):
                 'user': post.user.username,
                 'photo': post.photo.url if post.photo else ''
             })
-        return JsonResponse({'posts': post_data})
+        return JsonResponse({
+            'posts': post_data,
+            'page': page_obj.number,
+            'num_pages': paginator.num_pages
+        })
     # search
-    data['posts'] = posts
+    # data['posts'] = posts
     data['query'] = query
+    data['posts'] = page_obj
+    data['query'] = query
+    data['page_obj'] = page_obj
     return render(request, 'post/post-list.html',data)
 
 @login_required
@@ -103,6 +117,9 @@ def post_detail(request,post_id):
     data['title'] = 'Post detail'
     post = get_object_or_404(Post, pk=post_id)
     if request.method == 'POST':
+        if not request.user.is_authenticated:
+            messages.error(request, "You must be logged in to post a comment.")
+            return redirect('login') 
         form = CommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
