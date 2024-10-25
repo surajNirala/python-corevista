@@ -39,11 +39,12 @@
     </div>
 </nav>
 <script>
-    function search_filter(){
+    function search_filter(page){
         const query = $("#search").val();
-        
+        var url = `/post-list/?search=${encodeURIComponent(query)}`
+        //var url = 'post-list?page=' + page + '&search=' + query;
         if(query.trim() !== ""){
-            fetch(`/post-list/?search=${encodeURIComponent(query)}`, {
+            fetch(url, {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
